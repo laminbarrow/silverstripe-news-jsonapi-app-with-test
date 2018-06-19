@@ -6,7 +6,7 @@ use Faker\Factory;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 
-class NewsItem extends DataObject
+class Article extends DataObject
 {
     /**
      * Override table name for this class. If ignored will default to FQN of class.
@@ -15,7 +15,7 @@ class NewsItem extends DataObject
      *
      * @var string
      */
-    private static $table_name = "NewsItem";
+    private static $table_name = "Article";
 
     /**
      * db
@@ -38,18 +38,18 @@ class NewsItem extends DataObject
     public function requireDefaultRecords()
     {
         //let us create our selfs a few news items when running this in dev mode
-        //when no newsitems exists
+        //when no Articles exists
         if (!self::get()->first()) {
 
             $newsItesmToCreate = 5;
             $faker = Factory::create();
 
             for ($i = 1; $i <= $newsItesmToCreate; $i++) {
-                $newsItem = new self();
-                $newsItem->Title = $faker->sentence;
-                $newsItem->Content = $faker->text(200);
-                $newsItem->write();
-                DB::alteration_message('News Item created', 'created');
+                $article = new self();
+                $article->Title = $faker->sentence;
+                $article->Content = $faker->text(200);
+                $article->write();
+                DB::alteration_message('New Article created', 'created');
             }
         }
 
