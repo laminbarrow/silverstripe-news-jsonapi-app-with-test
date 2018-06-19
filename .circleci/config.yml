@@ -21,7 +21,7 @@ jobs:
         
       - run: sudo apt-get update -y
       - run: sudo apt-get install -y libcurl4-openssl-dev libsqlite3-dev libicu-dev libsqlite3-0 libsqlite3-dev sqlite3
-      - run: sudo apt-get install -y zlib1g-dev libssl-dev libmcrypt-dev build-essential
+      - run: sudo apt-get install -y zlib1g-dev libssl-dev libmcrypt-dev libpng-dev build-essential
       - run: sudo docker-php-ext-install zip mcrypt mysqli curl gd gettext intl mbstring pdo pdo_sqlite sqlite3
 
       # Download and cache dependencies
