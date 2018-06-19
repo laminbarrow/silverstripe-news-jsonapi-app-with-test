@@ -2,7 +2,7 @@
 namespace mysite;
 
 use mysite\BaseController;
-use mysite\DataObjects\NewsItem;
+use mysite\DataObjects\Article;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 
@@ -46,6 +46,7 @@ class APIController extends BaseController
         'index',
         'articles',
         'showArticle',
+        'deleteArticle',
     ];
 
     /**
@@ -62,7 +63,7 @@ class APIController extends BaseController
      */
     public function index()
     {
-        return $this->serveJSON("The News JSON API Server is online :)");
+        return $this->serveJSON("The News Articcles JSON API Server is online :)");
     }
 
     /**
@@ -77,7 +78,7 @@ class APIController extends BaseController
         //do this for GET request
         if ($request->isGET()) {
 
-            $articles = NewsItem::get()->toNestedArray();
+            $articles = Article::get()->toNestedArray();
             $arrayResult = $this->filterResponseDate($articles);
             return $this->serveJSON($arrayResult);
 
@@ -101,12 +102,12 @@ class APIController extends BaseController
             //validate the request
             $this->validateRequest($postedVars);
 
-            //create the news Item
-            $newsItem = NewsItem::create($postedVars);
-            $newsItem->write();
+            //create the article
+            $article = Article::create($postedVars);
+            $article->write();
 
-            //serve the fresh newsitem with status 200
-            return $this->serveJSON($this->filterResponseDate($newsItem->toMap()), 200);
+            //serve the fresh Article with status 200
+            return $this->serveJSON($this->filterResponseDate($article->toMap()), 200);
         }
         return $this->serveJSON("You must specify the body of your POST request", 400);
     }
@@ -121,7 +122,7 @@ class APIController extends BaseController
     {
         //do this for GET request
         if ($request->isGET()) {
-            $article = NewsItem::get()->byID($request->param("ID"))->toMap();
+            $article = Article::get()->byID($request->param("ID"))->toMap();
             $arrayResult = $this->filterResponseDate($article);
             return $this->serveJSON($arrayResult);
 
@@ -148,16 +149,16 @@ class APIController extends BaseController
             //validate the request
             $this->validateRequest($requestVars);
 
-            //update the news Item
-            $newsItem = NewsItem::get()->byID($request->param("ID"));
-            //fill in the news item based on the fillable keys we have defined
+            //update the article
+            $article = Article::get()->byID($request->param("ID"));
+            //fill in the article based on the fillable keys we have defined
             foreach ($this->fillableFields as $field) {
-                $newsItem->$field = $requestVars[$field];
+                $article->$field = $requestVars[$field];
             }
-            $newsItem->write();
+            $article->write();
 
-            //serve the fresh newsitem with status 200
-            return $this->serveJSON($this->filterResponseDate($newsItem->toMap()), 200);
+            //serve the fresh Article with status 200
+            return $this->serveJSON($this->filterResponseDate($article->toMap()), 200);
         }
         return $this->serveJSON("You must specify the body of your POST request", 400);
     }
