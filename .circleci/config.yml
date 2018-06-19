@@ -18,6 +18,9 @@ jobs:
 
     steps:
       - checkout
+        
+      - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
+      - run: sudo docker-php-ext-install zip mcrypt mysqli curl gd gettext intl mbstring pdo pdo_sqlite
 
       # Download and cache dependencies
       - restore_cache:
