@@ -4,3 +4,6 @@
 /themes/simple/
 /resources/
 /public/resources/
+memory;charset=utf8
+database/
+memory;host=none;charset=utf8

@@ -1,7 +1,11 @@
 <?php
 
 use mysite\APIController;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Kernel;
 use SilverStripe\Dev\FunctionalTest;
+use SilverStripe\ORM\DB;
 
 /**
  * API Test Controller
@@ -16,35 +20,37 @@ class APIControllerTest extends FunctionalTest
      *
      * @var string|array
      */
-    protected static $fixture_file = null;
+    protected static $fixture_file = "APIControllerTest.yml";
 
     /**
-     * @var Boolean If set to TRUE, this will force a test database to be generated
-     * in {@link setUp()}. Note that this flag is overruled by the presence of a
-     * {@link $fixture_file}, which always forces a database build.
-     *
-     * @var bool
-     */
-    protected $usesDatabase = null;
-
-    /**
-     * Setup
-     * This method is called once
-     * per method in every test case
+     * Called once per test case ({@link SapphireTest} subclass).
+     * This is different to {@link setUp()}, which gets called once
+     * per method. Useful to initialize expensive operations which
+     * don't change state for any called method inside the test,
+     * e.g. dynamically adding an extension. See {@link teardownAfterClass()}
+     * for tearing down the state again.
      *
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
-    }
+        parent::setUpBeforeClass();
 
-    /**
-     * tearDown
-     * Called after each test method
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
+        //set to test mode
+        $kernel = Injector::inst()->get(Kernel::class);
+        $kernel->setEnvironment("test");
+
+        //use an in memory SQLITE Database for the test
+        if (Director::isTest()) {
+            //use an SQLITE database in test mode
+            DB::setConfig([
+                'type' => 'SQLite3PDODatabase',
+                "server" => 'none',
+                "username" => 'none',
+                "password" => 'none',
+                'path' => ':memory:',
+                'database' => 'test.sqlite',
+            ]);
+        }
     }
 
     ////////////////////////////
@@ -92,5 +98,14 @@ class APIControllerTest extends FunctionalTest
 
         //make sure that the response is json
         $this->assertJson($apiArticlesRoute->getBody());
+    }
+
+    public function testValidateThePresenceOfTheFirstArticle()
+    {
+        $apiArticleRoute = $this->get("api/articles/1");
+        //make sure that the api/articles/1 route
+        //returns a 200 response code
+        $this->assertEquals(200, $apiArticleRoute->getStatusCode());
+
     }
 }
