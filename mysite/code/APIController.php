@@ -63,7 +63,7 @@ class APIController extends BaseController
      */
     public function index()
     {
-        return $this->serveJSON(["The News Articcles JSON API Server is online :)"]);
+        return $this->serveJSON(["The News Articles JSON API Server is online :)"]);
     }
 
     /**
