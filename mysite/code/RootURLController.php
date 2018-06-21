@@ -1,12 +1,10 @@
 <?php
 
-use mysite\BaseController;
+use SilverStripe\Control\Controller;
 
-class RootURLController extends BaseController
-{
+class RootURLController extends Controller {
 
-    public function index()
-    {
+    public function index() {
         echo "<html>Your site is now set up. Start adding controllers to mysite to get started.</html>";
     }
 
