@@ -1,6 +1,7 @@
 <?php
 
 use mysite\APIController;
+use mysite\DataObjects\Article;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Kernel;
@@ -53,8 +54,19 @@ class APIControllerTest extends FunctionalTest
         }
     }
 
+    /**
+     * tearDown method that's called once per test class rather once per test method.
+     *
+     */
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+
+        //
+    }
+
     ////////////////////////////
-    //TESTS
+    //TEST CASES
     ///////////////////////////
 
     /**
@@ -71,7 +83,7 @@ class APIControllerTest extends FunctionalTest
 
     /**
      * api/
-     * API index route
+     * API index route test
      */
     public function testIndexRoute()
     {
@@ -100,12 +112,111 @@ class APIControllerTest extends FunctionalTest
         $this->assertJson($apiArticlesRoute->getBody());
     }
 
+    /**
+     * Create new article test
+     *
+     */
+    public function testCreateNewArticle()
+    {
+        $createNewArticleRoute = $this->post(
+            "api/articles",
+            [
+                'Title' => "New Article",
+                "Content" => "New Article Content",
+            ]
+        );
+
+        //check status
+        $this->assertEquals(200, $createNewArticleRoute->getStatusCode());
+        //check json in the new article response
+        $this->assertJson($createNewArticleRoute->getBody());
+    }
+
+    /**
+     * api/articles/1
+     * Make sure that an article with ID one exits
+     *
+     */
     public function testValidateThePresenceOfTheFirstArticle()
     {
         $apiArticleRoute = $this->get("api/articles/1");
         //make sure that the api/articles/1 route
         //returns a 200 response code
         $this->assertEquals(200, $apiArticleRoute->getStatusCode());
+        //make sure that the json returned
+        $this->assertJson($apiArticleRoute->getBody());
+    }
+
+    /**
+     * Test Edit Article
+     *
+     */
+    public function testEditArticle()
+    {
+        //find the first article
+        $firstArticle = Article::get()->first();
+        $url = "api/articles/" . $firstArticle->ID;
+
+        //prepare our update data
+        $data = [
+            'Title' => 'Updated First Article Title',
+            "Content" => "Updated Article Content",
+        ];
+
+        //update article setup
+        $updateArticleResponse = Director::test(
+            $url,
+            $data,
+            null,
+            'POST',
+            $session = array(),
+            $httpMethod = null,
+            $body = $data
+        );
+        // status 200
+        $this->assertEquals(200, $updateArticleResponse->getStatusCode());
+    }
+
+    /**
+     * Create and Delete article test
+     *
+     */
+    public function testCreateAndDeleteNewArticle()
+    {
+        $createNewArticleRoute2 = $this->post(
+            "api/articles",
+            [
+                'Title' => "New Article created for deleting",
+                "Content" => "New Article Content",
+            ]
+        );
+
+        //check status
+        $this->assertEquals(200, $createNewArticleRoute2->getStatusCode());
+        //check json in the new article response
+        $this->assertJson($createNewArticleRoute2->getBody());
+
+        //now delete the article
+        $articleCreateResponse = json_decode($createNewArticleRoute2->getBody());
+        $url = "api/articles/" . $articleCreateResponse->ID;
+
+        //update article setup
+        $deleteArticleResponse = Director::test(
+            $url,
+            $postVars = [],
+            $session = array(),
+            $httpMethod = 'DELETE'
+        );
+        // status 200
+        $this->assertEquals(200, $deleteArticleResponse->getStatusCode());
+        //verify json
+        $this->assertJson($deleteArticleResponse->getBody());
+
+        //make sure that article has really been deleted
+        $deletedArticleLink = $this->get($url);
+        //it should be a 404
+        $this->assertEquals(404, $deletedArticleLink->getStatusCode());
 
     }
+
 }

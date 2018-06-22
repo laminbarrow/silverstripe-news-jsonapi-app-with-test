@@ -63,7 +63,7 @@ class APIController extends BaseController
      */
     public function index()
     {
-        return $this->serveJSON(["The News Articcles JSON API Server is online :)"]);
+        return $this->serveJSON(["The News Articles JSON API Server is online :)"]);
     }
 
     /**
@@ -87,6 +87,8 @@ class APIController extends BaseController
             //we will create a new article
             return $this->createArticle($request);
         }
+
+        return $this->serveJSON("The articles REST route endpoint only responds to GET and POST request types", 400);
 
     }
 
@@ -122,16 +124,22 @@ class APIController extends BaseController
     {
         //do this for GET request
         if ($request->isGET()) {
-            $article = Article::get()->byID($request->param("ID"))->toMap();
-            $arrayResult = $this->filterResponseDate($article);
-            return $this->serveJSON($arrayResult);
+            $article = Article::get()->byID($request->param("ID"));
+            if ($article) {
+                $arrayResult = $this->filterResponseDate($article->toMap());
+                return $this->serveJSON($arrayResult);
+            } else {
+                return $this->serveJSON("Sorry, that article cannot be found", 404);
+            }
 
-        } elseif ($request->isPUT()) {
+        } elseif ($request->isPUT() || $request->isPOST()) {
             //update article
             return $this->updateArticle($request);
+        } elseif ($request->isDELETE()) {
+            return $this->deleteArticle($request);
         }
 
-        return $this->serveJSON("Sorry, this REST endpoint only responds to GET requests", 400);
+        return $this->serveJSON("Sorry, this REST endpoint only responds to GET, POST & PUT requests", 400);
     }
 
     /**
@@ -143,24 +151,52 @@ class APIController extends BaseController
     public function updateArticle(HTTPRequest $request)
     {
 
-        if ($request->getBody()) {
-            //parse the request body as this is a PUT request
-            parse_str($request->getBody(), $requestVars);
-            //validate the request
-            $this->validateRequest($requestVars);
-
+        if ($request->isPUT() || $request->isPOST()) {
+            if ($request->isPUT() && $request->getBody()) {
+                //parse the request body as this is a PUT request
+                parse_str($request->getBody(), $requestVars);
+                //validate the request
+                $this->validateRequest($requestVars);
+            } elseif ($request->isPOST() && $request->postVars()) {
+                $requestVars = $request->postVars();
+                $this->validateRequest($requestVars);
+            }
             //update the article
             $article = Article::get()->byID($request->param("ID"));
-            //fill in the article based on the fillable keys we have defined
-            foreach ($this->fillableFields as $field) {
-                $article->$field = $requestVars[$field];
+            if ($article) {
+                //fill in the article based on the fillable keys we have defined
+                foreach ($this->fillableFields as $field) {
+                    $article->$field = $requestVars[$field];
+                }
+                $article->write();
+            } else {
+                return $this->serveJSON("Sorry, that article cannot be found", 404);
             }
-            $article->write();
 
             //serve the fresh Article with status 200
             return $this->serveJSON($this->filterResponseDate($article->toMap()), 200);
         }
-        return $this->serveJSON("You must specify the body of your POST request", 400);
+        return $this->serveJSON("You must specify the body of your PUT or POST VARS for POST request request", 400);
+    }
+
+    /**
+     * Delete Article
+     *
+     * @return void
+     */
+    public function deleteArticle(HTTPRequest $request)
+    {
+        if ($request->isDELETE()) {
+            $articleID = $request->param("ID");
+            $article = Article::get()->byID($articleID);
+            if ($article) {
+                $article->delete();
+                return $this->serveJSON("$articleID deleted", 200);
+            }
+            return $this->serveJSON("That article cannot be found article", 404);
+
+        }
+        return $this->serveJSON("You must define a DELETE request to delete this article", 400);
     }
 
     /**

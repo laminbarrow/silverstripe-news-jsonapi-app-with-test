@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/php:7.1.5-browsers
+      - image: circleci/php:7.1.18-cli-node-browsers
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -19,11 +19,10 @@ jobs:
     steps:
       - checkout
         
-      - run: sudo apt-get update -y
       - run: sudo apt-get install -y libcurl4-openssl-dev libsqlite3-dev libicu-dev libsqlite3-0 libsqlite3-dev sqlite3
       - run: sudo apt-get install -y zlib1g-dev libssl-dev libmcrypt-dev libpng-dev libjpeg62-turbo-dev g++  build-essential
       - run: sudo apt-get install -y libfreetype6-dev libmemcached-dev 
-      - run: sudo docker-php-ext-install zip mcrypt mysqli curl gd gettext intl mbstring pdo pdo_sqlite
+      - run: sudo docker-php-ext-install zip mcrypt mysqli curl gd gettext intl mbstring pdo pdo_mysql pdo_sqlite
 
       # Download and cache dependencies
       - restore_cache:
