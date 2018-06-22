@@ -8,7 +8,7 @@ It comes with a wide test-suite covering and verifying most of the integrated fu
 
 I've made a video showing this app and you can find it on youtube at https://youtu.be/Dh-xmlcWSnw
 
-[![See the video demo on youtube](public\video-thumb.jpg)](https://youtu.be/Dh-xmlcWSnw "Silverstripe 4 REST JSON NEWS API APP")
+[![See the video demo on youtube](public/video-thumb.jpg)](https://youtu.be/Dh-xmlcWSnw "Silverstripe 4 REST JSON NEWS API APP")
 
 
 **Installation**
