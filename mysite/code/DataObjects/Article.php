@@ -42,7 +42,7 @@ class Article extends DataObject
         //when no Articles exists in dev or test mode
         if (Director::isDev() || Director::isTest()) {
 
-            if (!self::get()->first()) {
+            if (!static::get()->first()) {
 
                 $newsItesmToCreate = 5;
                 $faker = Factory::create();
