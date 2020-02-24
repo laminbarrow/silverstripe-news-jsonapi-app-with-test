@@ -7,7 +7,7 @@
         "silverstripe/recipe-plugin": "^1.1",
         "silverstripe/assets": "1.1.1@stable",
         "silverstripe/config": "1.0.4@stable",
-        "silverstripe/framework": "4.1.1@stable",
+        "silverstripe/framework": "4.4.5@stable",
         "silverstripe/sqlite3": "^2.1",
         "silverstripe/admin": "^1.1",
         "fzaninotto/faker": "^1.7"
