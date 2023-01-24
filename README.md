@@ -1,6 +1,6 @@
 ## Silverstripe News JSON API App With Test
 
-[![CircleCI](https://circleci.com/gh/laminbarrow/silverstripe-news-jsonapi-app-with-test.svg?style=svg)](https://circleci.com/gh/laminbarrow/silverstripe-news-jsonapi-app-with-test)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/laminbarrow/silverstripe-news-jsonapi-app-with-test/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/laminbarrow/silverstripe-news-jsonapi-app-with-test/tree/master)
 
 This is a proof of concept app showcasing a custom built JSON REST API Silverstripe4 news app. It's a Silverstripe 4.1 application and you'll need to have a PHP 7 environment with the requirements to run Silverstripe in order to run it. 
 
