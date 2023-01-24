@@ -13,7 +13,7 @@
         "fzaninotto/faker": "^1.7"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "^5.7",
+        "phpunit/phpunit": "^5.7",
         "silverstripe/serve": "^2.1"
     },
     "authors": [
