@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - run: php --version
-      - run: sudo sudo -E docker-php-ext-install zip mcrypt mysqli curl gd gettext intl mbstring pdo pdo_mysql pdo_sqlite
+      #- run: sudo sudo -E docker-php-ext-install zip mcrypt mysqli curl gd gettext intl mbstring pdo pdo_mysql pdo_sqlite
 
       # Download and cache dependencies
       - restore_cache:
